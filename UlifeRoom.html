@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduClima — App Protótipo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0D1117;
+    --surface: #161B22;
+    --surface2: #1C2330;
+    --surface3: #222A38;
+    --border: #2A3444;
+    --accent: #00C896;
+    --accent2: #00A3FF;
+    --accent3: #FF6B6B;
+    --text: #E6EDF3;
+    --text2: #8B949E;
+    --text3: #586069;
+    --cold: #00A3FF;
+    --warm: #FF8C42;
+    --green: #00C896;
+    --red: #FF6B6B;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .phone-frame {
+    width: 390px;
+    background: var(--surface);
+    border-radius: 48px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--border), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,200,150,0.06);
+    position: relative;
+  }
+
+  .status-bar {
+    background: var(--bg);
+    padding: 14px 24px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .status-icons { display: flex; gap: 6px; align-items: center; font-size: 11px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ============ LOGIN ============ */
+  #screen-login {
+    background: linear-gradient(160deg, #0D1117 0%, #0D1D2A 100%);
+    padding: 40px 32px 48px;
+    min-height: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .logo-area { text-align: center; margin-bottom: 48px; }
+  .logo-icon {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #00C896, #00A3FF);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 16px;
+    box-shadow: 0 8px 32px rgba(0,200,150,0.3);
+  }
+  .logo-title { font-size: 28px; font-weight: 700; color: var(--text); }
+  .logo-sub { font-size: 14px; color: var(--text2); margin-top: 4px; }
+
+  .input-group { width: 100%; margin-bottom: 16px; }
+  .input-label { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .input-field {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-field:focus { border-color: var(--accent); }
+  .input-field::placeholder { color: var(--text3); }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, #00C896, #00A3FF);
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.2s, transform 0.1s;
+    box-shadow: 0 4px 20px rgba(0,200,150,0.3);
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:active { transform: scale(0.98); }
+
+  /* ============ HOME ============ */
+  #screen-home { background: var(--bg); min-height: 720px; }
+
+  .home-header {
+    background: var(--surface);
+    padding: 20px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .home-header-top { display: flex; justify-content: space-between; align-items: center; }
+  .greeting { font-size: 13px; color: var(--text2); }
+  .greeting strong { display: block; font-size: 18px; font-weight: 700; color: var(--text); margin-top: 2px; }
+  .avatar {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #00C896, #00A3FF);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #000;
+  }
+
+  .date-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 12px;
+  }
+
+  .home-body { padding: 20px 20px 100px; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    margin-top: 24px;
+  }
+
+  .aula-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .aula-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+    border-radius: 4px 0 0 4px;
+  }
+  .aula-card.proxima::before { background: var(--accent2); }
+  .aula-card.encerrada::before { background: var(--text3); }
+  .aula-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+  .aula-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .aula-nome { font-size: 16px; font-weight: 600; }
+  .aula-status-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .badge-ativa { background: rgba(0,200,150,0.15); color: var(--green); }
+  .badge-proxima { background: rgba(0,163,255,0.15); color: var(--cold); }
+  .badge-encerrada { background: rgba(88,96,105,0.3); color: var(--text3); }
+
+  .aula-info { display: flex; gap: 16px; margin-top: 10px; }
+  .aula-info-item { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text2); }
+  .aula-info-icon { font-size: 14px; }
+
+  .aula-ac-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .aula-ac-label { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+  .toggle-switch {
+    width: 44px; height: 24px;
+    background: var(--surface3);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+    border: 1px solid var(--border);
+  }
+  .toggle-switch.on { background: var(--accent); border-color: var(--accent); }
+  .toggle-knob {
+    position: absolute;
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    top: 2px; left: 2px;
+    transition: left 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .toggle-switch.on .toggle-knob { left: 22px; }
+
+  /* ============ SALA DETAIL ============ */
+  #screen-sala { background: var(--bg); min-height: 720px; }
+
+  .back-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: none; border: none;
+    color: var(--accent2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; padding: 0;
+  }
+
+  .sala-header {
+    background: var(--surface);
+    padding: 16px 24px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sala-nome-big { font-size: 26px; font-weight: 700; margin-top: 8px; }
+  .sala-disciplina { font-size: 14px; color: var(--text2); margin-top: 4px; }
+
+  .sala-body { padding: 20px; }
+
+  .control-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .control-card-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 16px;
+  }
+
+  .lock-display {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px 0;
+  }
+  .lock-icon-big {
+    font-size: 56px;
+    margin-bottom: 12px;
+    transition: all 0.4s;
+  }
+  .lock-status-text { font-size: 16px; font-weight: 600; }
+  .lock-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+  .btn-unlock {
+    width: 100%;
+    background: linear-gradient(135deg, #00C896, #009970);
+    border: none; border-radius: 14px;
+    padding: 16px; color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-top: 16px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(0,200,150,0.25);
+  }
+  .btn-unlock:active { transform: scale(0.97); }
+  .btn-unlock.unlocked {
+    background: linear-gradient(135deg, #FF6B6B, #cc4444);
+    box-shadow: 0 4px 20px rgba(255,107,107,0.25);
+  }
+
+  .temp-display { text-align: center; margin-bottom: 16px; }
+  .temp-big { font-size: 64px; font-weight: 700; color: var(--cold); font-family: 'DM Mono', monospace; line-height: 1; }
+  .temp-unit { font-size: 28px; vertical-align: super; }
+  .temp-label { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+  .temp-slider-row { display: flex; align-items: center; gap: 12px; }
+  .temp-btn {
+    width: 40px; height: 40px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text); font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .temp-btn:hover { background: var(--surface3); border-color: var(--cold); }
+  .temp-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 6px;
+    background: linear-gradient(to right, var(--cold) 0%, var(--cold) 50%, var(--border) 50%);
+    border-radius: 3px;
+    outline: none;
+  }
+  .temp-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    background: var(--cold);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,163,255,0.4);
+  }
+
+  .agendamento-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .agendamento-row:last-child { border-bottom: none; }
+  .ag-label { font-size: 14px; }
+  .ag-value { font-size: 14px; font-weight: 600; color: var(--accent); }
+
+  .btn-agendar {
+    width: 100%;
+    background: rgba(0,163,255,0.1);
+    border: 1px solid rgba(0,163,255,0.3);
+    border-radius: 14px;
+    padding: 14px;
+    color: var(--cold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; margin-top: 16px;
+    transition: all 0.2s;
+  }
+  .btn-agendar:hover { background: rgba(0,163,255,0.2); }
+
+  /* ============ BOTTOM NAV ============ */
+  .bottom-nav {
+    position: sticky; bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 12px 0 20px;
+    z-index: 100;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer;
+    padding: 4px;
+    transition: all 0.2s;
+  }
+  .nav-icon { font-size: 22px; }
+  .nav-label { font-size: 10px; font-weight: 500; color: var(--text3); }
+  .nav-item.active .nav-label { color: var(--accent); }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 4px var(--accent)); }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--accent); }
+  .toast.info { border-color: var(--cold); }
+
+  /* ============ ENERGIA ============ */
+  #screen-energia { background: var(--bg); min-height: 720px; }
+  #screen-config { background: var(--bg); min-height: 720px; }
+
+  .energia-header, .config-header {
+    background: var(--surface);
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .energia-header h2, .config-header h2 {
+    font-size: 22px; font-weight: 700; margin-top: 4px;
+  }
+  .energia-header p, .config-header p {
+    font-size: 13px; color: var(--text2); margin-top: 4px;
+  }
+  .energia-body, .config-body {
+    padding: 20px 20px 100px;
+    overflow-y: auto; max-height: 620px;
+  }
+
+  .stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    text-align: center;
+  }
+  .stat-value { font-size: 26px; font-weight: 700; font-family: 'DM Mono', monospace; }
+  .stat-label { font-size: 11px; color: var(--text2); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-delta { font-size: 12px; font-weight: 600; margin-top: 4px; }
+  .delta-pos { color: var(--green); }
+  .delta-neg { color: var(--red); }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .chart-title {
+    font-size: 13px; font-weight: 600; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px;
+  }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+  .bar {
+    width: 100%; border-radius: 6px 6px 0 0;
+    transition: height 0.6s ease;
+    min-height: 4px;
+  }
+  .bar-label { font-size: 10px; color: var(--text3); }
+  .bar-val { font-size: 10px; color: var(--text2); font-weight: 600; }
+
+  .sala-rank {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .sala-rank:last-child { border-bottom: none; }
+  .sala-rank-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--surface2); display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--text2);
+  }
+  .sala-rank-num.top { background: rgba(0,200,150,0.15); color: var(--green); }
+  .sala-rank-info { flex: 1; }
+  .sala-rank-name { font-size: 14px; font-weight: 600; }
+  .sala-rank-sub { font-size: 12px; color: var(--text2); }
+  .sala-rank-bar-wrap { width: 80px; }
+  .sala-rank-bar-bg { height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+  .sala-rank-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(to right, var(--cold), var(--accent)); }
+  .sala-rank-kwh { font-size: 12px; font-weight: 600; color: var(--accent); margin-top: 2px; text-align: right; }
+
+  /* ============ CONFIG ============ */
+  .config-section { margin-bottom: 24px; }
+  .config-section-label {
+    font-size: 11px; font-weight: 600; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px; padding-left: 4px;
+  }
+  .config-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .config-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .config-item:last-child { border-bottom: none; }
+  .config-item:hover { background: var(--surface2); }
+  .config-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .ci-green { background: rgba(0,200,150,0.12); }
+  .ci-blue { background: rgba(0,163,255,0.12); }
+  .ci-orange { background: rgba(255,140,66,0.12); }
+  .ci-red { background: rgba(255,107,107,0.12); }
+  .ci-purple { background: rgba(150,100,255,0.12); }
+  .config-info { flex: 1; }
+  .config-name { font-size: 15px; font-weight: 500; }
+  .config-desc { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .config-arrow { color: var(--text3); font-size: 16px; }
+  .config-toggle { margin-left: auto; }
+
+  .profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 24px;
+  }
+  .profile-avatar {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #00C896, #00A3FF);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 700; color: #000;
+  }
+  .profile-name { font-size: 18px; font-weight: 700; }
+  .profile-email { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .profile-badge {
+    display: inline-block; margin-top: 6px;
+    background: rgba(0,200,150,0.12); color: var(--green);
+    font-size: 11px; font-weight: 600;
+    padding: 3px 10px; border-radius: 20px;
+  }
+  .version-text {
+    text-align: center; font-size: 12px; color: var(--text3); margin-top: 8px;
+  }
+
+  /* notch */
+  .notch {
+    width: 120px; height: 34px;
+    background: var(--bg);
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <div class="status-icons">
+      <span>●●●</span>
+      <span>WiFi</span>
+      <span>🔋</span>
+    </div>
+  </div>
+
+  <!-- ======= LOGIN ======= -->
+  <div id="screen-login" class="screen active" style="display:flex;">
+    <div class="logo-area">
+      <div class="logo-icon">❄️</div>
+      <div class="logo-title">EduClima</div>
+      <div class="logo-sub">Controle inteligente de salas</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">E-mail institucional</div>
+      <input class="input-field" type="email" placeholder="professor@faculdade.edu.br" value="joao.silva@faculdade.edu.br">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Senha</div>
+      <input class="input-field" type="password" placeholder="••••••••" value="12345678">
+    </div>
+    <button class="btn-primary" onclick="goTo('home')">Entrar</button>
+  </div>
+
+  <!-- ======= HOME ======= -->
+  <div id="screen-home" class="screen">
+    <div class="home-header">
+      <div class="home-header-top">
+        <div class="greeting">
+          Bom dia 👋
+          <strong>Prof. João Silva</strong>
+        </div>
+        <div class="avatar">JS</div>
+      </div>
+      <div class="date-pill">📅 Terça-feira, 14 de Abril</div>
+    </div>
+
+    <div class="home-body">
+      <div class="section-title">Aulas de hoje</div>
+
+      <!-- CARD 1 - em andamento -->
+      <div class="aula-card" onclick="goTo('sala', 'SALA 12 — BLOCO B', 'Engenharia de Software', '08:00 – 10:00', true)">
+        <div class="aula-top">
+          <div class="aula-nome">Engenharia de Software</div>
+          <span class="aula-status-badge badge-ativa">● Em aula</span>
+        </div>
+        <div class="aula-info">
+          <div class="aula-info-item"><span class="aula-info-icon">🚪</span> Sala 12 — Bloco B</div>
+          <div class="aula-info-item"><span class="aula-info-icon">🕐</span> 08:00 – 10:00</div>
+        </div>
+        <div class="aula-ac-row">
+          <div class="aula-ac-label">❄️ Ar-condicionado <span style="color:var(--green);font-size:11px;font-weight:600;">LIGADO • 22°C</span></div>
+          <div class="toggle-switch on" onclick="event.stopPropagation(); toggleAC(this)"><div class="toggle-knob"></div></div>
+        </div>
+      </div>
+
+      <!-- CARD 2 - próxima -->
+      <div class="aula-card proxima" onclick="goTo('sala', 'SALA 7 — BLOCO A', 'Banco de Dados', '10:30 – 12:30', false)">
+        <div class="aula-top">
+          <div class="aula-nome">Banco de Dados</div>
+          <span class="aula-status-badge badge-proxima">Em 30 min</span>
+        </div>
+        <div class="aula-info">
+          <div class="aula-info-item"><span class="aula-info-icon">🚪</span> Sala 7 — Bloco A</div>
+          <div class="aula-info-item"><span class="aula-info-icon">🕐</span> 10:30 – 12:30</div>
+        </div>
+        <div class="aula-ac-row">
+          <div class="aula-ac-label">❄️ Ar-condicionado <span style="color:var(--cold);font-size:11px;font-weight:600;">AGENDADO • 10:00</span></div>
+          <div class="toggle-switch on" onclick="event.stopPropagation(); toggleAC(this)"><div class="toggle-knob"></div></div>
+        </div>
+      </div>
+
+      <!-- CARD 3 - encerrada -->
+      <div class="aula-card encerrada" onclick="goTo('sala', 'SALA 3 — BLOCO C', 'Algoritmos', '07:00 – 08:00', false)">
+        <div class="aula-top">
+          <div class="aula-nome" style="color:var(--text2)">Algoritmos</div>
+          <span class="aula-status-badge badge-encerrada">Encerrada</span>
+        </div>
+        <div class="aula-info">
+          <div class="aula-info-item"><span class="aula-info-icon">🚪</span> Sala 3 — Bloco C</div>
+          <div class="aula-info-item"><span class="aula-info-icon">🕐</span> 07:00 – 08:00</div>
+        </div>
+        <div class="aula-ac-row">
+          <div class="aula-ac-label" style="color:var(--text3)">❄️ Ar-condicionado <span style="font-size:11px;font-weight:600;">DESLIGADO</span></div>
+          <div class="toggle-switch" style="opacity:0.5"><div class="toggle-knob"></div></div>
+        </div>
+      </div>
+
+      <div class="section-title">Resumo energético</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:12px;">
+          <div style="font-size:24px;font-weight:700;color:var(--green)">2.4 <span style="font-size:14px;">kWh</span></div>
+          <div style="font-size:12px;color:var(--text2);margin-top:4px;">Consumo hoje</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:12px;">
+          <div style="font-size:24px;font-weight:700;color:var(--cold)">-18%</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:4px;">vs. mês passado</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="navGo('home', this)"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></div>
+      <div class="nav-item" onclick="navGo('sala-list', this)"><span class="nav-icon">🚪</span><span class="nav-label">Salas</span></div>
+      <div class="nav-item" onclick="navGo('energia', this)"><span class="nav-icon">📊</span><span class="nav-label">Energia</span></div>
+      <div class="nav-item" onclick="navGo('config', this)"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></div>
+    </div>
+  </div>
+
+  <!-- ======= SALA DETAIL ======= -->
+  <div id="screen-sala" class="screen">
+    <div class="sala-header">
+      <button class="back-btn" onclick="goTo('home')">← Voltar</button>
+      <div id="sala-nome" class="sala-nome-big">SALA 12 — BLOCO B</div>
+      <div id="sala-disciplina" class="sala-disciplina">Engenharia de Software</div>
+    </div>
+
+    <div class="sala-body" style="padding-bottom:100px;overflow-y:auto;max-height:580px;">
+
+      <!-- CONTROLE DE ACESSO -->
+      <div class="control-card">
+        <div class="control-card-title">🔑 Controle de Acesso</div>
+        <div class="lock-display">
+          <div class="lock-icon-big" id="lock-icon">🔒</div>
+          <div class="lock-status-text" id="lock-status">Porta Trancada</div>
+          <div class="lock-sub" id="lock-sub">Toque para desbloquear</div>
+        </div>
+        <button class="btn-unlock" id="btn-unlock" onclick="toggleLock()">🔓 Desbloquear Sala</button>
+      </div>
+
+      <!-- CONTROLE DO AR -->
+      <div class="control-card">
+        <div class="control-card-title">❄️ Ar-condicionado</div>
+        <div class="temp-display">
+          <div class="temp-big"><span id="temp-val">22</span><span class="temp-unit">°C</span></div>
+          <div class="temp-label">Temperatura definida</div>
+        </div>
+        <div class="temp-slider-row">
+          <button class="temp-btn" onclick="changeTemp(-1)">−</button>
+          <input type="range" class="temp-slider" id="temp-slider" min="16" max="28" value="22" oninput="updateTemp(this.value)">
+          <button class="temp-btn" onclick="changeTemp(1)">+</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-top:4px;">
+          <span>16°C</span><span>28°C</span>
+        </div>
+        <button class="btn-agendar" onclick="showToast('✅ Ar agendado para ligar 30 min antes da aula!', 'success')">⏰ Agendar 30 min antes da aula</button>
+      </div>
+
+      <!-- AGENDAMENTO -->
+      <div class="control-card">
+        <div class="control-card-title">📅 Agendamento da Aula</div>
+        <div class="agendamento-row">
+          <span class="ag-label">🕐 Horário da aula</span>
+          <span class="ag-value" id="sala-horario">08:00 – 10:00</span>
+        </div>
+        <div class="agendamento-row">
+          <span class="ag-label">❄️ Ar liga às</span>
+          <span class="ag-value">07:30</span>
+        </div>
+        <div class="agendamento-row">
+          <span class="ag-label">❄️ Ar desliga às</span>
+          <span class="ag-value">10:05</span>
+        </div>
+        <div class="agendamento-row">
+          <span class="ag-label">💡 Status</span>
+          <span class="ag-value" style="color:var(--green)">● Automatizado</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navGo('home', this)"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></div>
+      <div class="nav-item active" onclick="navGo('sala-list', this)"><span class="nav-icon">🚪</span><span class="nav-label">Salas</span></div>
+      <div class="nav-item" onclick="navGo('energia', this)"><span class="nav-icon">📊</span><span class="nav-label">Energia</span></div>
+      <div class="nav-item" onclick="navGo('config', this)"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></div>
+    </div>
+  </div>
+
+  <!-- ======= ENERGIA ======= -->
+  <div id="screen-energia" class="screen">
+    <div class="energia-header">
+      <div style="font-size:13px;color:var(--text2)">Monitoramento</div>
+      <h2>📊 Energia</h2>
+      <p>Consumo em tempo real — Abril 2026</p>
+    </div>
+    <div class="energia-body">
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--green)">2.4<span style="font-size:14px"> kWh</span></div>
+          <div class="stat-label">Hoje</div>
+          <div class="stat-delta delta-pos">↓ 18% vs ontem</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--cold)">41.2<span style="font-size:14px"> kWh</span></div>
+          <div class="stat-label">Esse mês</div>
+          <div class="stat-delta delta-pos">↓ 23% vs março</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--warm)">R$<span style="font-size:20px">18</span></div>
+          <div class="stat-label">Economia mês</div>
+          <div class="stat-delta delta-pos">↑ Automatização</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--accent)">3<span style="font-size:16px"></span></div>
+          <div class="stat-label">Salas ativas agora</div>
+          <div class="stat-delta" style="color:var(--text2)">de 12 no bloco</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Consumo semanal (kWh)</div>
+        <div class="bar-chart" id="weekly-chart"></div>
+        <div style="display:flex;gap:8px;margin-top:8px;" id="weekly-labels"></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">🏆 Salas mais eficientes hoje</div>
+        <div id="sala-ranking"></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">💡 Impacto da automação</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:13px">Ar ligado desnecessariamente</span>
+              <span style="font-size:13px;font-weight:600;color:var(--red)">Antes: 2.1h/dia</span>
+            </div>
+            <div style="height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;">
+              <div style="width:70%;height:100%;background:var(--red);border-radius:4px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:13px">Ar ligado desnecessariamente</span>
+              <span style="font-size:13px;font-weight:600;color:var(--green)">Agora: 0.2h/dia</span>
+            </div>
+            <div style="height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;">
+              <div style="width:7%;height:100%;background:var(--green);border-radius:4px;"></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.2);border-radius:12px;font-size:13px;color:var(--green);text-align:center;font-weight:600;">
+          ✅ Redução de 90% no desperdício energético
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navGo('home', this)"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></div>
+      <div class="nav-item" onclick="navGo('sala-list', this)"><span class="nav-icon">🚪</span><span class="nav-label">Salas</span></div>
+      <div class="nav-item active" onclick="navGo('energia', this)"><span class="nav-icon">📊</span><span class="nav-label">Energia</span></div>
+      <div class="nav-item" onclick="navGo('config', this)"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></div>
+    </div>
+  </div>
+
+  <!-- ======= CONFIG ======= -->
+  <div id="screen-config" class="screen">
+    <div class="config-header">
+      <div style="font-size:13px;color:var(--text2)">Preferências</div>
+      <h2>⚙️ Configurações</h2>
+    </div>
+    <div class="config-body">
+
+      <div class="profile-card">
+        <div class="profile-avatar">JS</div>
+        <div>
+          <div class="profile-name">Prof. João Silva</div>
+          <div class="profile-email">joao.silva@faculdade.edu.br</div>
+          <span class="profile-badge">● Conta Ativa</span>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <div class="config-section-label">Automação</div>
+        <div class="config-list">
+          <div class="config-item">
+            <div class="config-icon ci-blue">❄️</div>
+            <div class="config-info">
+              <div class="config-name">Ligar ar automaticamente</div>
+              <div class="config-desc">Antes de cada aula</div>
+            </div>
+            <div class="toggle-switch on config-toggle" onclick="toggleAC(this)"><div class="toggle-knob"></div></div>
+          </div>
+          <div class="config-item">
+            <div class="config-icon ci-green">⏰</div>
+            <div class="config-info">
+              <div class="config-name">Antecedência padrão</div>
+              <div class="config-desc">30 minutos antes</div>
+            </div>
+            <div style="color:var(--accent);font-size:14px;font-weight:600;">30 min ›</div>
+          </div>
+          <div class="config-item">
+            <div class="config-icon ci-orange">🌡️</div>
+            <div class="config-info">
+              <div class="config-name">Temperatura padrão</div>
+              <div class="config-desc">Aplicada ao ligar automaticamente</div>
+            </div>
+            <div style="color:var(--accent);font-size:14px;font-weight:600;">22°C ›</div>
+          </div>
+          <div class="config-item">
+            <div class="config-icon ci-blue">🔒</div>
+            <div class="config-info">
+              <div class="config-name">Auto-trancar porta</div>
+              <div class="config-desc">Após 10 segundos desbloqueada</div>
+            </div>
+            <div class="toggle-switch on config-toggle" onclick="toggleAC(this)"><div class="toggle-knob"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <div class="config-section-label">Notificações</div>
+        <div class="config-list">
+          <div class="config-item">
+            <div class="config-icon ci-purple">🔔</div>
+            <div class="config-info">
+              <div class="config-name">Lembrete de aula</div>
+              <div class="config-desc">15 min antes do início</div>
+            </div>
+            <div class="toggle-switch on config-toggle" onclick="toggleAC(this)"><div class="toggle-knob"></div></div>
+          </div>
+          <div class="config-item">
+            <div class="config-icon ci-green">📊</div>
+            <div class="config-info">
+              <div class="config-name">Relatório semanal</div>
+              <div class="config-desc">Consumo energético por e-mail</div>
+            </div>
+            <div class="toggle-switch on config-toggle" onclick="toggleAC(this)"><div class="toggle-knob"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <div class="config-section-label">Conta</div>
+        <div class="config-list">
+          <div class="config-item" onclick="showToast('🔐 Alteração de senha enviada por e-mail', 'info')">
+            <div class="config-icon ci-orange">🔐</div>
+            <div class="config-info">
+              <div class="config-name">Alterar senha</div>
+            </div>
+            <div class="config-arrow">›</div>
+          </div>
+          <div class="config-item" onclick="goTo('login')">
+            <div class="config-icon ci-red">🚪</div>
+            <div class="config-info">
+              <div class="config-name" style="color:var(--red)">Sair da conta</div>
+            </div>
+            <div class="config-arrow">›</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="version-text">EduClima v1.0.0 — UFMT 2026</div>
+
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navGo('home', this)"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></div>
+      <div class="nav-item" onclick="navGo('sala-list', this)"><span class="nav-icon">🚪</span><span class="nav-label">Salas</span></div>
+      <div class="nav-item" onclick="navGo('energia', this)"><span class="nav-icon">📊</span><span class="nav-label">Energia</span></div>
+      <div class="nav-item active" onclick="navGo('config', this)"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></div>
+    </div>
+  </div>
+
+</div><!-- /phone-frame -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+let lockOpen = false;
+let currentNav = 'home';
+
+function navGo(screen, el) {
+  if (screen === 'sala-list') { goTo('home'); return; }
+  goTo(screen);
+  if (screen === 'energia') renderEnergia();
+}
+
+function goTo(screen, salaNome, salaDisciplina, salaHorario) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const el = document.getElementById('screen-' + screen);
+  el.style.display = 'block';
+  el.classList.add('active');
+
+  if (screen === 'sala' && salaNome) {
+    document.getElementById('sala-nome').textContent = salaNome;
+    document.getElementById('sala-disciplina').textContent = salaDisciplina;
+    document.getElementById('sala-horario').textContent = salaHorario;
+    lockOpen = false;
+    document.getElementById('lock-icon').textContent = '🔒';
+    document.getElementById('lock-status').textContent = 'Porta Trancada';
+    document.getElementById('lock-sub').textContent = 'Toque para desbloquear';
+    document.getElementById('btn-unlock').classList.remove('unlocked');
+    document.getElementById('btn-unlock').textContent = '🔓 Desbloquear Sala';
+  }
+}
+
+function toggleLock() {
+  lockOpen = !lockOpen;
+  const icon = document.getElementById('lock-icon');
+  const status = document.getElementById('lock-status');
+  const sub = document.getElementById('lock-sub');
+  const btn = document.getElementById('btn-unlock');
+
+  if (lockOpen) {
+    icon.textContent = '🔓';
+    status.textContent = 'Porta Desbloqueada';
+    sub.textContent = 'Acesso liberado • Trava em 10s';
+    btn.classList.add('unlocked');
+    btn.textContent = '🔒 Trancar Sala';
+    showToast('✅ Sala desbloqueada com sucesso!', 'success');
+    setTimeout(() => {
+      if (lockOpen) toggleLock();
+    }, 10000);
+  } else {
+    icon.textContent = '🔒';
+    status.textContent = 'Porta Trancada';
+    sub.textContent = 'Toque para desbloquear';
+    btn.classList.remove('unlocked');
+    btn.textContent = '🔓 Desbloquear Sala';
+    showToast('🔒 Sala trancada', 'info');
+  }
+}
+
+function updateTemp(val) {
+  document.getElementById('temp-val').textContent = val;
+  const pct = (val - 16) / (28 - 16) * 100;
+  document.getElementById('temp-slider').style.background =
+    `linear-gradient(to right, var(--cold) 0%, var(--cold) ${pct}%, var(--border) ${pct}%)`;
+}
+
+function changeTemp(delta) {
+  const slider = document.getElementById('temp-slider');
+  const newVal = Math.min(28, Math.max(16, parseInt(slider.value) + delta));
+  slider.value = newVal;
+  updateTemp(newVal);
+}
+
+function toggleAC(el) {
+  el.classList.toggle('on');
+  const isOn = el.classList.contains('on');
+  showToast(isOn ? '❄️ Ar-condicionado ligado!' : '⏹ Ar-condicionado desligado', isOn ? 'success' : 'info');
+}
+
+function renderEnergia() {
+  const days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  const vals = [5.2, 4.8, 3.1, 5.5, 2.4, 1.2, 0.8];
+  const max = Math.max(...vals);
+  const chart = document.getElementById('weekly-chart');
+  const labels = document.getElementById('weekly-labels');
+  if (!chart || chart.children.length > 0) return;
+  vals.forEach((v, i) => {
+    const pct = Math.round((v / max) * 100);
+    const isToday = i === 4;
+    chart.innerHTML += `<div class="bar-wrap">
+      <div class="bar-val" style="color:${isToday ? 'var(--green)' : 'var(--text3)'}">${v}</div>
+      <div class="bar" style="height:${pct}%;background:${isToday ? 'linear-gradient(to top,var(--green),var(--accent))' : 'var(--surface3)'}"></div>
+    </div>`;
+    labels.innerHTML += `<div style="flex:1;text-align:center;font-size:10px;color:${isToday ? 'var(--green)' : 'var(--text3)'};">${days[i]}</div>`;
+  });
+
+  const salas = [
+    { name: 'Sala 12 — Bloco B', kwh: '0.8', pct: 30 },
+    { name: 'Sala 7 — Bloco A', kwh: '1.1', pct: 42 },
+    { name: 'Sala 3 — Bloco C', kwh: '0.0', pct: 0 },
+    { name: 'Sala 5 — Bloco A', kwh: '2.3', pct: 88 },
+  ];
+  const rank = document.getElementById('sala-ranking');
+  if (rank) rank.innerHTML = salas.map((s, i) => `
+    <div class="sala-rank">
+      <div class="sala-rank-num ${i === 0 ? 'top' : ''}">${i + 1}</div>
+      <div class="sala-rank-info">
+        <div class="sala-rank-name">${s.name}</div>
+        <div class="sala-rank-sub">${s.kwh === '0.0' ? 'Encerrada — sem consumo' : 'Em uso hoje'}</div>
+      </div>
+      <div class="sala-rank-bar-wrap">
+        <div class="sala-rank-bar-bg"><div class="sala-rank-bar-fill" style="width:${s.pct}%"></div></div>
+        <div class="sala-rank-kwh">${s.kwh} kWh</div>
+      </div>
+    </div>`).join('');
+}
+
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  void t.offsetWidth;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
